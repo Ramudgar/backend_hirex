@@ -4,7 +4,7 @@ const investor= new mongoose.Schema({
     firstName:{
 type:String
     },
-    firstName:{
+    lastName:{
 type:String
     },
 email:{

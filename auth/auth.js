@@ -26,9 +26,10 @@ module.exports.investorGuard= (req,res,next)=>{
        const token =req.headers.authorization.split(" ")[1];
        const data =jwt.verify(token,"softwarica");
        console.log(data);
-       employee.findOne({_id:data.employeeId})
+       investor.findOne({_id:data.investorId})
        .then((edata)=>{
-           req.employeeInfo=edata;
+        //    console.log(edata)
+           req.investorInfo=edata;
            next();
        })
 

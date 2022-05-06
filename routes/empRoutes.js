@@ -90,6 +90,20 @@ router.delete('/comment/delete',auth.customerGuard,(req,res)=>{
 
 
 
+// this is dashboard route for customer
+
+router.get("/employee/dashboard",auth.customerGuard,(req,res)=>{
+// console.log(req.employeeInfo.firstName);
+// res.json(req.employeeInfo);
+res.json({
+    firstName:req.employeeInfo.firstName,
+    lastName:req.employeeInfo.lastName,
+    email:req.employeeInfo.email
+})
+})
+
+
+
 
 
 module.exports = router;
