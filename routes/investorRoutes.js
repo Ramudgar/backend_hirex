@@ -1,13 +1,12 @@
-const express = require('express');
-const bcryptjs = require('bcryptjs')
-// const app = express();
-const router = express.Router();
-const employee = require('../models/empUser');
-const jwt= require('jsonwebtoken');
+const express=require('express');
+const router=new express.Router();
 const auth=require('../auth/auth')
+const bcryptjs = require('bcryptjs')
+const jwt= require('jsonwebtoken');
+const employee = require('../models/investor');
 
 
-router.post('/employee/register', (req, res) => {
+router.post('/investor/register', (req, res) => {
 
     const email = req.body.email;
     employee.findOne({ email: email })
@@ -18,9 +17,7 @@ router.post('/employee/register', (req, res) => {
             }
             const firstName = req.body.fname;
             const lastName = req.body.lname;
-
-            const gender = req.body.gender;
-            const date = req.body.date;
+            const mobile=req.body.mobile;
             const password = req.body.password;
 
             bcryptjs.hash(password, 10, (e, hashed_pw) => {
@@ -29,8 +26,7 @@ router.post('/employee/register', (req, res) => {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
-                    gender: gender,
-                    date: date,
+                    mobile:mobile,
                     password: hashed_pw
                 });
                 data.save().then(() => {
@@ -45,17 +41,17 @@ router.post('/employee/register', (req, res) => {
 
 // For Login
 
-router.post('/employee/login',(req,res)=>{
+router.post('/investor/login',(req,res)=>{
 const email=req.body.email;
 const password=req.body.password;
 employee.findOne({email:email})
-.then((emp_data)=>{
-if (emp_data==null){
+.then((invest_data)=>{
+if (invest_data==null){
 res.json({msg:"Invalid credentials"})
 return;
 }
 
-bcryptjs.compare(password,emp_data,(e,result)=>{
+bcryptjs.compare(password,invest_data,(e,result)=>{
 
     if(result==false){
         res.json({msg:"Invalid Password"});
@@ -69,7 +65,7 @@ bcryptjs.compare(password,emp_data,(e,result)=>{
     // it creates the token for the logged in user 
     // the token stores the logged in user id
 
-   const token = jwt.sign({employeeId:emp_data._id },"softwarica");
+   const token = jwt.sign({investorId:invest_data._id },"softwarica");
    res.json({token:token});
 
 
@@ -83,7 +79,7 @@ bcryptjs.compare(password,emp_data,(e,result)=>{
 
 // this is for testing only, we will delete this latter
 
-router.delete('/comment/delete',auth.customerGuard,(req,res)=>{
+router.delete('invest/comment/delete',auth.customerGuard,(req,res)=>{
     // console.log("deleted")
     res.json({msg:'deleted'})
 })
