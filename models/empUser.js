@@ -13,13 +13,6 @@ const employee=new mongoose.Schema({
         required:true,
         
     },
-    gender:{
-        type:String,
-    },
-
-    dob:{
-        type:Date,
-    },
     username:{
         type:String,
         required:true,
@@ -29,9 +22,25 @@ const employee=new mongoose.Schema({
         type:String,
         required:true,
     },
+    gender:{
+        type:String,
+    },
+
+    dob:{
+        type:Date,
+    },
+
     profile_pic:{
         type:String,
 },
+address:{
+    type:String
+},
+education:{
+    type:String
+},
+id_card:{type:String},
+specialist:{type:String}
 
 })
 

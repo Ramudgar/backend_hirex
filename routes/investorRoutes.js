@@ -20,7 +20,12 @@ router.post('/investor/register', (req, res) => {
             const lastName = req.body.lname;
             const email=req.body.email;
             const mobile=req.body.mobile;
+            const username=req.body.username;
             const password = req.body.password;
+            const address=req.body.address;
+            const dob=req.body.dob;
+            const gender=req.body.gender;
+            const profile_pic=req.body.profile_pic;
 
             bcryptjs.hash(password, 10, (e, hashed_pw) => {
 
@@ -29,10 +34,17 @@ router.post('/investor/register', (req, res) => {
                     lastName: lastName,
                     email: email,
                     mobile:mobile,
-                    password: hashed_pw
+                    username:username,
+                    password: hashed_pw,
+                    address:address,
+                    dob:dob,
+                    gender:gender,
+                    profile_pic:profile_pic,
+
+                     
                 });
                 data.save().then(() => {
-                    res.json({ msg: 'Data inserted', a: "success" });
+                    res.json({ msg: 'Data inserted', msg: "success" });
                 }).catch((e) => {
                     res.json({ msg: e });
                 });
@@ -44,9 +56,9 @@ router.post('/investor/register', (req, res) => {
 // For Login
 
 router.post('/investor/login',(req,res)=>{
-const email=req.body.email;
+const username=req.body.username;
 const password=req.body.password;
-investor.findOne({email:email})
+investor.findOne({username:username})
 .then((investor_data)=>{
 if (investor_data==null){
 res.json({msg:"Invalid credentials"})

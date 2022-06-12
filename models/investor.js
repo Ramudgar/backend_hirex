@@ -28,6 +28,8 @@ const investor= new mongoose.Schema({
         type:String,
         required:true,
     },
+    Phone:{ type:Number,},
+    address:{ type:String},
     profile_pic:{
         type:String,
 },
