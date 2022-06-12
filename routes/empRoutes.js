@@ -1,6 +1,6 @@
 const express = require('express');
 const bcryptjs = require('bcryptjs')
-// const app = express();
+
 const router = express.Router();
 const employee = require('../models/empUser');
 const jwt= require('jsonwebtoken');
@@ -13,14 +13,16 @@ router.post('/employee/register', (req, res) => {
     employee.findOne({ email: email })
         .then((emp_data) => {
             if (emp_data != null) {
-                res.json({ msg: 'email already exists' });
+                res.json({ msg: 'email already exists'});
                 return;
             }
             const firstName = req.body.fname;
             const lastName = req.body.lname;
-
+            const email = req.body.email;
+            const username = req.body.username;
             const gender = req.body.gender;
-            const date = req.body.date;
+            const dob = req.body.dob;
+            const profile_pic= req.body.profile_pic;
             const password = req.body.password;
 
             bcryptjs.hash(password, 10, (e, hashed_pw) => {
@@ -29,12 +31,14 @@ router.post('/employee/register', (req, res) => {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,
+                    username: username,
                     gender: gender,
-                    date: date,
+                    dob: dob,
+                    profile_pic:profile_pic,
                     password: hashed_pw
                 });
                 data.save().then(() => {
-                    res.json({ msg: 'Data inserted', a: "success" });
+                    res.json({ msg: 'Data inserted', msg: "success" });
                 }).catch((e) => {
                     res.json({ msg: e });
                 });
@@ -46,7 +50,7 @@ router.post('/employee/register', (req, res) => {
 // For Login
 
 router.post('/employee/login',(req,res)=>{
-const email=req.body.email;
+const email=req.body.username;
 const password=req.body.password;
 employee.findOne({email:email})
 .then((emp_data)=>{

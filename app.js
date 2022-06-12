@@ -1,17 +1,21 @@
-const express=require('express');
-const app=express();
+const express = require('express');
+const app = express();
+require('colors');
+require('./config/database');
+const cors = require("cors");
+const investorRoutes = require('./routes/investorRoutes');
+const empRoutes = require('./routes/empRoutes');
+const companyRoutes = require('./routes/companyRoutes');
+
+
+
 app.use(express.json());
-
-require('./database/database');
-
-const empRoutes=require('./routes/empRoutes');
-
+app.use(cors());
 app.use(empRoutes);
-const investorRoutes=require('./routes/investorRoutes');
-
 app.use(investorRoutes);
+app.use(companyRoutes);
 
-
-
-
-app.listen(5000);
+//Server
+app.listen(3000, () => {
+  console.log("Server running at http://localhost:3000".yellow.underline.bold);
+});

@@ -2,24 +2,35 @@ const mongoose= require('mongoose');
 
 const investor= new mongoose.Schema({
     firstName:{
-type:String
+        type:String,
     },
     lastName:{
-type:String
+        type:String,
     },
-email:{
-    type:String,
-    required:true
-},
-mobile:{
-type:String,
-required:true
-},
-password:{
-    type:String,
-    required:true
-}
+    email:{
+        type:String, 
+        required:true,
+        
+    },
+    gender:{
+        type:String,
+    },
 
+    dob:{
+        type:Date,
+    },
+    username:{
+        type:String,
+        required:true,
+    },
+
+    password:{
+        type:String,
+        required:true,
+    },
+    profile_pic:{
+        type:String,
+},
 
 })
-module.exports=mongoose.model("investor", investor);
+module.exports=mongoose.model("Investor", investor);

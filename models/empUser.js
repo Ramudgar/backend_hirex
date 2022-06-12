@@ -11,18 +11,28 @@ const employee=new mongoose.Schema({
     email:{
         type:String,
         required:true,
+        
     },
     gender:{
-type:String,
-    },
-
-    date:{
         type:String,
     },
 
-password:{
-    type:String
-}
+    dob:{
+        type:Date,
+    },
+    username:{
+        type:String,
+        required:true,
+    },
+
+    password:{
+        type:String,
+        required:true,
+    },
+    profile_pic:{
+        type:String,
+},
+
 })
 
-module.exports=mongoose.model("employee", employee);
+module.exports=mongoose.model("Employee", employee);
