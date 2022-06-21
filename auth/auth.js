@@ -8,7 +8,7 @@ module.exports.customerGuard= (req,res,next)=>{
     try {
        const token =req.headers.authorization.split(" ")[1];
        const data =jwt.verify(token,"softwarica");
-       console.log(data);
+    //    console.log(data);
        employee.findOne({_id:data.employeeId})
        .then((edata)=>{
            req.employeeInfo=edata;

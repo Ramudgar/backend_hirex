@@ -58,7 +58,7 @@ router.post('/employee/register', (req, res) => {
 // For Login
 
 router.post('/employee/login',(req,res)=>{
-const email=req.body.username;
+const email=req.body.emial;
 const password=req.body.password;
 employee.findOne({email:email})
 .then((emp_data)=>{

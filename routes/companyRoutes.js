@@ -5,6 +5,7 @@ const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const company = require('../models/startup_company');
 
+// Register a new company
 router.post('/company/register/', (req, res) => {
 
     const email = req.body.email;
@@ -54,6 +55,8 @@ router.post('/company/register/', (req, res) => {
             })
         })
 });
+
+// Login a company
 router.post('/company/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -78,15 +81,13 @@ router.post('/company/login', (req, res) => {
                 // it creates the token for the logged in user 
                 // the token stores the logged in user id
 
-                const token = jwt.sign({ companyId: compnay_data._id }, "softwarica");
+                const token = jwt.sign({ companyId: company_data._id }, "softwarica");
                 res.json({ token: token });
-
-
-
             })
-
         })
         .catch()
 });
+
+
 
 module.exports = router;
