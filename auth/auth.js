@@ -1,59 +1,76 @@
-const jwt=require('jsonwebtoken');
-const employee=require('../models/empUser')
-const investor=require('../models/investor')
-const company=require('../models/startup_company')
+const jwt = require('jsonwebtoken');
+const employee = require('../models/empUser')
+const investor = require('../models/investor')
+const company = require('../models/startup_company');
+const User = require('../models/Users');
 
 // this is guard for customer
-module.exports.customerGuard= (req,res,next)=>{
+module.exports.customerGuard = (req, res, next) => {
     try {
-       const token =req.headers.authorization.split(" ")[1];
-       const data =jwt.verify(token,"softwarica");
-    //    console.log(data);
-       employee.findOne({_id:data.employeeId})
-       .then((edata)=>{
-           req.employeeInfo=edata;
-           next();
-       })
+        const token = req.headers.authorization.split(" ")[1];
+        const data = jwt.verify(token, "softwarica");
+        //    console.log(data);
+        employee.findOne({ _id: data.employeeId })
+            .then((edata) => {
+                req.employeeInfo = edata;
+                next();
+            })
 
-        
+
     } catch (error) {
-        res.json({msg:'invalid Token'})
+        res.json({ msg: 'invalid Token' })
     }
 
 };
 //  this is investor guard
-module.exports.investorGuard= (req,res,next)=>{
+module.exports.investorGuard = (req, res, next) => {
     try {
-       const token =req.headers.authorization.split(" ")[1];
-       const data =jwt.verify(token,"softwarica");
-       console.log(data);
-       investor.findOne({_id:data.investorId})
-       .then((edata)=>{
-        //    console.log(edata)
-           req.investorInfo=edata;
-           next();
-       })
+        const token = req.headers.authorization.split(" ")[1];
+        const data = jwt.verify(token, "softwarica");
+        console.log(data);
+        investor.findOne({ _id: data.investorId })
+            .then((edata) => {
+                //    console.log(edata)
+                req.investorInfo = edata;
+                next();
+            })
 
-        
+
     } catch (error) {
-        res.json({msg:'invalid Token'})
+        res.json({ msg: 'invalid Token' })
     }
 
 };
 
 // this is company guard
-module.exports.companyGuard= (req,res,next)=>{    
+module.exports.companyGuard = (req, res, next) => {
     try {
-       const token =req.headers.authorization.split(" ")[1];
-       const data =jwt.verify(token,"softwarica");
-       console.log(data);
-       company.findOne({_id:data.companyId})
-         .then((edata)=>{
-              req.companyInfo=edata;
-              next();
-         }
+        const token = req.headers.authorization.split(" ")[1];
+        const data = jwt.verify(token, "softwarica");
+        console.log(data);
+        company.findOne({ _id: data.companyId })
+            .then((edata) => {
+                req.companyInfo = edata;
+                next();
+            }
             )
     } catch (error) {
-        res.json({msg:'invalid Token'})
+        res.json({ msg: 'invalid Token' })
     }
-     };
+};
+
+
+module.exports.userGaurd = (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split("")[1];
+        const data = jwt.verify(token, "softwarica");
+        console.log(data);
+        User.findOne({ _id: data.userId }).then((user_data) => {
+            req.userInfo = user_data;
+            next();
+        })
+    }
+    catch (error) {
+        res.json({ msg: 'invalid token' })
+    }
+};
