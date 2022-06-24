@@ -14,7 +14,7 @@ const UserSchema = new Schema({
  },
  role: {
   type: String,
-  enum: ["startup", "investor", "employee"],
+  enum: ["company", "investor", "employee"],
   required:true
  },
  username: {
@@ -26,6 +26,6 @@ const UserSchema = new Schema({
  }
 });
  
-const User = mongoose.model('user', UserSchema);
+const User = mongoose.model('User', UserSchema);
  
 module.exports = User;

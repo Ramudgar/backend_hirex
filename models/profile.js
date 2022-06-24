@@ -2,55 +2,61 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ProfileSchema = new Schema({
-    Name: {
+    name: {
         type: String,
         required: true,
     },
-    Email: {
-        type: String,
+    userId: {
+        type: mongoose.Schema.userId,
+        ref: 'User',
         required: true,
     },
-    Phone: {
+    phone: {
         type: Number,
         required: true,
     },
-    Address: {
-        type: String,
-    },
-    Street:{
-        type:String,
-    },
-    City:{
-        type:String,
-    },
-    State:{
-        type:String,
-    },
-    Zip:{   
-        type:String,
-    },
-    Country:{
-        type:String,
-    },
-    education:{
-        type:String,
-    },
-    experience:{
-        type:String,
-    },
+    address: [{
+
+        street: {
+            type: String,
+        },
+        city: {
+            type: String,
+        },
+        state: {
+            type: String,
+        },
+        zip: {
+            type: String,
+        },
+        country: {
+            type: String,
+        }
+    }],
+    education: [{
+        college: {
+            type: String,
+        },
+        level: {
+            type: String
+        },
+        address: { type: String },
+        yearJoined: { type: Date },
+
+        yearPassed: { type: Date }
+
+    }],
     pic: {
         type: String,
     },
-    role: {
-        type: String,
-    },
+    
     type: {
         type: String,
     },
     description: {
         type: String,
     },
-    website:{
+    website: {
         type: String
     }
 
