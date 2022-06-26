@@ -9,7 +9,7 @@ const ProfileSchema = new Schema({
     userId: {
         type: mongoose.Schema.userId,
         ref: 'User',
-        required: true,
+       
     },
     phone: {
         type: Number,
@@ -31,7 +31,19 @@ const ProfileSchema = new Schema({
         },
         country: {
             type: String,
+        },
+        vdc: {
+            type: String,
+        },
+        ward: {
+            type: String,
+        },
+        tole: {
+            type: String,
         }
+
+
+
     }],
     education: [{
         college: {
@@ -40,7 +52,7 @@ const ProfileSchema = new Schema({
         level: {
             type: String
         },
-        address: { type: String },
+        clzaddress: { type: String },
         yearJoined: { type: Date },
 
         yearPassed: { type: Date }

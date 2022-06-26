@@ -3,19 +3,19 @@ const app = express();
 require('colors');
 require('./config/database');
 const cors = require("cors");
-// const investorRoutes = require('./routes/investorRoutes');
-// const empRoutes = require('./routes/empRoutes');
-// const companyRoutes = require('./routes/companyRoutes');
+const bodyParser = require("body-parser");
 const userRoutes=require('./routes/UserRoutes');
+const profileRoutes=require('./routes/profileRoutes');
+const jobRoutes=require('./routes/jobRoutes');
 
 
 
 app.use(express.json());
 app.use(cors());
-// app.use(empRoutes);
-// app.use(investorRoutes);
-// app.use(companyRoutes);
+app.use(bodyParser.json());
 app.use(userRoutes);
+app.use(profileRoutes);
+app.use(jobRoutes);
 
 //Server
 app.listen(3000, () => {
