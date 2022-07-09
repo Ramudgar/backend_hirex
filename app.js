@@ -1,18 +1,26 @@
 const express = require('express');
 const app = express();
+
 require('colors');
 require('./config/database');
 const cors = require("cors");
-const bodyParser = require("body-parser");
+
+
+//Constants and routes
 const userRoutes=require('./routes/UserRoutes');
 const profileRoutes=require('./routes/profileRoutes');
 const jobRoutes=require('./routes/jobRoutes');
 
 
-
-app.use(express.json());
+//Before using any services enable CORS
 app.use(cors());
-app.use(bodyParser.json());
+app.options("*", cors()); // * means allow all the http request to pass from any other region
+
+// app.use(json());
+app.use(express.json(    ));
+app.use(express.urlencoded({ urlencoded:true }));
+
+// Using api routes to connect to the routes
 app.use(userRoutes);
 app.use(profileRoutes);
 app.use(jobRoutes);

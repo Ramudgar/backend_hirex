@@ -1,45 +1,37 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../auth/auth')
-const bcryptjs = require('bcryptjs')
-const jwt = require('jsonwebtoken');
 const Job=require('../models/job');
-const User=require('../models/Users');
-
+const middleware = require('../auth/multers');
 
 
 // To add new job
-router.post('/jobs/create',auth.verifyUser,  (req, res) => {
+router.post('/jobs/create', middleware.single(''), async (req, res) => {
 
-    const user = req.user;
-    const data = req.body;
-    let job = new Job({
-  
-      title: data.title,
-      maxApplicants: data.maxApplicants,
-      maxPositions: data.maxPositions,
-      dateOfPosting: data.dateOfPosting,
-      deadline: data.deadline,
-      skillsets: data.skillsets,
-      jobType: data.jobType,
-      duration: data.duration,
-      salary: data.salary,
-      rating: data.rating,
-    });
-  
-    job.save().then(() => {
-        res.json({ message: "Job added successfully to the database" });
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  });
+    try {
 
+        const userId=req.body._id;
+        const { title, maxApplicants, maxPositions, location, activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary } = req.body;
+        console.log(req.body);
 
+        const job = new Job({
+        userId,title, maxApplicants, maxPositions, location, activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary,
+        });
+
+        await job.save().then(() => {
+            res.json({ msg: "success" });
+        });
+    }
+    catch (e) {
+        res.status(400).json({ msg: e });
+    }
+});
+
+        
 
     // To get all jobs
-    router.get('/jobs/getAll',auth.verifyUser,  (req, res) => {
-        const user = req.user;
+    router.get('/jobs/getAll',auth.verifyUser,middleware.single(''),  (req, res) => {
+        
         Job.find({}).then((data) => {
             res.json(data);
         }
@@ -52,21 +44,21 @@ router.post('/jobs/create',auth.verifyUser,  (req, res) => {
 
 
     // // To get all jobs by user
-    // router.get('/jobs/getAllByUser',auth.verifyUser,  (req, res) => {
-    //     const user = req.user;
-    //     Job.find({user:user._id}).then((data) => {
-    //         res.json(data);
-    //     }
-    //     ).catch((err) => {
-    //         res.status(400).json(err);
-    //     }
-    //     );
-    // }
-    // );
-
-    // // To get all jobs by user 
-    router.get('/jobs/getAllByUser/:id',auth.verifyUser,  (req, res) => {
+    router.get('/jobs/getAllByUser',auth.verifyUser, middleware.single(''), (req, res) => {
         const user = req.user;
+        Job.find({user:user._id}).then((data) => {
+            res.json(data);
+        }
+        ).catch((err) => {
+            res.status(400).json(err);
+        }
+        );
+    }
+    );
+
+    // // To get all jobs by user id
+    router.get('/jobs/getAllByUser/:id',auth.verifyUser, middleware.single(''), (req, res) => {
+        
         Job.find({user:req.params.id}).then((data) => {
             res.json(data);
         }
@@ -81,7 +73,7 @@ router.post('/jobs/create',auth.verifyUser,  (req, res) => {
 
 
     // To get jobs by id   ##NOT USED because the code below this is in useed
-    // router.get('/jobs/getbyId/:id',auth.verifyUser,  (req, res) => {
+    // router.get('/jobs/getbyId/:id',auth.verifyUser,middleware.single(''),  (req, res) => {
     //     const user = req.user;
     //     Job.findById(req.params.id).then((data) => {
     //         res.json(data);
@@ -96,7 +88,7 @@ router.post('/jobs/create',auth.verifyUser,  (req, res) => {
 
 
     // find a single job with a id.
-router.get ("/jobs/getById/:id",auth.verifyUser ,(req, res) => {
+router.get ("/jobs/getById/:id",auth.verifyUser ,middleware.single(''),(req, res) => {
     Job.findById(req.params.id)
         .then(data => {
             if(!data) {
@@ -128,8 +120,8 @@ router.get ("/jobs/getById/:id",auth.verifyUser ,(req, res) => {
 
 
     // To update job
-    router.put('/jobs/update/:id',auth.verifyUser,  (req, res) => {
-        const user = req.user;
+    router.put('/jobs/update/:id',auth.verifyUser,middleware.single(''),  (req, res) => {
+
         const data = req.body;
         Job.findByIdAndUpdate(req.params.id, data, { new: true }).then((data) => {
             res.send({
@@ -147,8 +139,8 @@ router.get ("/jobs/getById/:id",auth.verifyUser ,(req, res) => {
 
 
     // To delete job by id
-    router.delete('/jobs/deleteById/:id',auth.verifyUser,  (req, res) => {
-        const user = req.user;
+    router.delete('/jobs/deleteById/:id',auth.verifyUser,middleware.single(''),  (req, res) => {
+        
         Job.findByIdAndRemove(req.params.id).then((data) => {
 
             res.send({
@@ -166,7 +158,7 @@ router.get ("/jobs/getById/:id",auth.verifyUser ,(req, res) => {
     );
 
     // To delete all jobs
-    router.delete('/jobs/deleteAll',auth.verifyUser,  (req, res) => {
+    router.delete('/jobs/deleteAll',auth.verifyUser,middleware.single(''),  (req, res) => {
         const user = req.user;
         Job.deleteMany({}).then((data) => {
             res.send({
@@ -182,9 +174,9 @@ router.get ("/jobs/getById/:id",auth.verifyUser ,(req, res) => {
     }
     );
 
-    // To delete all jobs by user
-    router.delete('/jobs/deleteAllByUser/:id',auth.verifyUser,  (req, res) => {
-        const user = req.user;
+    // To delete all jobs by user id
+    router.delete('/jobs/deleteAllByUser/:id',auth.verifyUser, middleware.single(''), (req, res) => {
+        
         Job.deleteMany({user:req.params.id}).then((data) => {
             res.send({
                 success: true,

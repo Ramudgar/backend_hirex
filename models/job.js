@@ -1,8 +1,16 @@
 const mongoose = require("mongoose");
+const user=require('../models/Users');
 
 let schema = new mongoose.Schema(
   {
-    
+    userId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "category",
+    },
     
     title: {
       type: String,
@@ -14,6 +22,10 @@ let schema = new mongoose.Schema(
     },
     maxPositions: {
       type: Number,
+      required: true,
+    },
+    location: {
+      type: String,
       required: true,
     },
     activeApplications: {
@@ -34,10 +46,12 @@ let schema = new mongoose.Schema(
       type: Date,
       
     },
-    skillsets: {
-      type: String,
+    skillSets: {
+      type: String,   
     },
     jobType: {
+      defalult: "PartTime",
+      enum: ["FullTime", "PartTime", "Contract"],
       type: String,
       required: true,
     },
@@ -50,6 +64,9 @@ let schema = new mongoose.Schema(
       type: String,
       
     },
+    description:{
+      type: String,
+    },
     rating: {
       type: Number,
       max: 5.0,
@@ -61,8 +78,13 @@ let schema = new mongoose.Schema(
         msg: "Invalid rating",
       },
     },
+    image:{ type: String ,
+      default:""},
   },
-  { collation: { locale: "en" } }
+  
+ 
+  { timestamps: true }
+  
 );
 
 module.exports = mongoose.model("jobs", schema);
