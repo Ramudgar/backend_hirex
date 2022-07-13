@@ -11,6 +11,7 @@ const userRoutes=require('./routes/UserRoutes');
 const profileRoutes=require('./routes/profileRoutes');
 const jobRoutes=require('./routes/jobRoutes');
 const jobApplicantsRoutes=require('./routes/jobApplicantsRoutes');
+const jobCategoryRoutes=require('./routes/jobCategoryRoutes');
 
 
 //Before using any services enable CORS
@@ -24,7 +25,7 @@ app.use(userRoutes);
 app.use(profileRoutes);
 app.use(jobRoutes);
 app.use(jobApplicantsRoutes);
-
+app.use(jobCategoryRoutes);
 
 //Server
 app.listen(3000, () => {

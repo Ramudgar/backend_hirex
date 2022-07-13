@@ -153,7 +153,7 @@ router.get ("/jobs/getById/:id",auth.verifyUser ,middleware.single(''),(req, res
 
 
     // To update job
-    router.put('/jobs/update/:id',auth.verifyUser,  (req, res) => {
+    router.put('/jobs/update/:id', (req, res) => {
 
        try{
         const data = req.body;
