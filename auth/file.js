@@ -1,8 +1,5 @@
-const express = require('express');
+
 const multer = require('multer');
-
-const middleware = multer({});
-
 
 
 //Validate upload file
@@ -18,36 +15,28 @@ const FILE_TYPE_MAP = {
     "video/mp4": "mp4",
     "video/mpeg": "mpeg",
     "video/quicktime": "mov",
-    "text/plain": "txt"
-    
-    
+    "text/plain": "txt"  
   };
 
-// upload image to server
 
-var storage = multer.diskStorage({
+  // upload file to server
+  var storageFile = multer.diskStorage({
     destination: function (req, file, cb) {
       const isValid = FILE_TYPE_MAP[file.mimetype];
       //validate weather the file is a valid image
-      if (!isValid) cb(new Error("Invalid file type"), "./public/uploads");
-      else cb(null,"./public/uploads"); // path where we upload an image
+      if (!isValid) cb(new Error("Invalid file type"), "./public/uploads/file");
+      else cb(null,"./public/uploads/file"); // path where we upload an image
     },
     filename: function (req, file, cb) {
       const extension = FILE_TYPE_MAP[file.mimetype];
-      cb(null, `IMG-${Date.now()}.${extension}`);
+      cb(null, `${Date.now()}.${extension}`);
     }
   });
 
-
- 
   
+  var uploadsFile = multer({ storage: storageFile });
 
 
-  var uploadOptions = multer({ storage: storage });
-
-
-
-
- module.exports =  uploadOptions;
+ module.exports = uploadsFile;
 
 

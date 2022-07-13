@@ -29,7 +29,7 @@ const ProfileSchema = new Schema({
             type: String,
         },
         zip: {
-            type: String,
+            type: Number,
         },
         country: {
             type: String,
@@ -38,7 +38,7 @@ const ProfileSchema = new Schema({
             type: String,
         },
         ward: {
-            type: String,
+            type: Number,
         },
         tole: {
             type: String,
@@ -60,11 +60,13 @@ const ProfileSchema = new Schema({
         yearPassed: { type: Date }
 
     }],
-    pic: {
+    image: {
         type: String,
+        default:""
     },
+    images: [{ type: String }],
     
-    type: {
+    Usertype: {
         type: String,
     },
     description: {

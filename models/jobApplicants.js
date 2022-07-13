@@ -6,12 +6,16 @@ let schema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },
+
+    jobId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "jobs",
+    },
     name: {
       type: String,
       required: true,
     },
-    education: [
-      {
+    education: {
         institutionName: {
           type: String,
           required: true,
@@ -20,7 +24,7 @@ let schema = new mongoose.Schema(
           type: Number,
           min: 1930,
           max: new Date().getFullYear(),
-          required: true,
+          // required: true,
           validate: Number.isInteger,
         },
         endYear: {
@@ -37,8 +41,8 @@ let schema = new mongoose.Schema(
           ],
         },
       },
-    ],
-    skills: [String],
+    
+    skills: {type:String},
     rating: {
       type: Number,
       max: 5.0,
@@ -52,12 +56,11 @@ let schema = new mongoose.Schema(
     },
     resume: {
       type: String,
+      required: true,
     },
-    profile: {
-      type: String,
-    },
+    
   },
   { collation: { locale: "en" } }
 );
 
-module.exports = mongoose.model("JobApplicantInfo", schema);
+module.exports = mongoose.model("JobApplicants", schema);

@@ -10,20 +10,21 @@ const cors = require("cors");
 const userRoutes=require('./routes/UserRoutes');
 const profileRoutes=require('./routes/profileRoutes');
 const jobRoutes=require('./routes/jobRoutes');
+const jobApplicantsRoutes=require('./routes/jobApplicantsRoutes');
 
 
 //Before using any services enable CORS
 app.use(cors());
 app.options("*", cors()); // * means allow all the http request to pass from any other region
 
-// app.use(json());
 app.use(express.json(    ));
-app.use(express.urlencoded({ urlencoded:true }));
 
 // Using api routes to connect to the routes
 app.use(userRoutes);
 app.use(profileRoutes);
 app.use(jobRoutes);
+app.use(jobApplicantsRoutes);
+
 
 //Server
 app.listen(3000, () => {
