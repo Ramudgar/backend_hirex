@@ -1,82 +1,50 @@
-const mongoose = require('mongoose');
+const mongoose =require('mongoose');
 
-
-const Schema = mongoose.Schema;
-
-const ProfileSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
+const profile=mongoose.Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
     },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+    name:{
+        type:String,
+        required:true
+    },
+    skills:{ type:String ,
+        // required:true
+    },
+    address:{
+        country:{ type:String,
+            // required:true
+        },
+        
+        city:{ type:String,
+            // required:true
+        },
+        
+        zipCode:{ type:String,
+            // required:true
+        },
+        state:{ type:String,
+            // required:true
+        },
        
     },
-    phone: {
-        type: Number,
-        required: true,
+    education:{
+        institutionName:{ type:String},
+        
+        degree:{ type:String},
+        startYear:{ type:String},
+        endYear:{ type:String},
+        
     },
-    address: [{
-
-        street: {
-            type: String,
-        },
-        city: {
-            type: String,
-        },
-        state: {
-            type: String,
-        },
-        zip: {
-            type: Number,
-        },
-        country: {
-            type: String,
-        },
-        vdc: {
-            type: String,
-        },
-        ward: {
-            type: Number,
-        },
-        tole: {
-            type: String,
-        }
-
-
-
-    }],
-    education: [{
-        college: {
-            type: String,
-        },
-        level: {
-            type: String
-        },
-        clzaddress: { type: String },
-        yearJoined: { type: Date },
-
-        yearPassed: { type: Date }
-
-    }],
-    image: {
-        type: String,
-        default:""
-    },
-    images: [{ type: String }],
+    experience:{ type:String},
+    languages:{ type:String},
+    phone:{ type:String,
+    required:true},
+    email:{ type:String},
+    website:{ type:String},
     
-    Usertype: {
-        type: String,
-    },
-    description: {
-        type: String,
-    },
-    website: {
-        type: String
-    }
-
+    profilePic:{ type:String},
 });
 
-const Profile = mongoose.model('profile', ProfileSchema);
-exports.Profile = Profile;
+module.exports=mongoose.model('Profile',profile);

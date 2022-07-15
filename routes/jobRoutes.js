@@ -7,16 +7,16 @@ const uploadOptions = require('../auth/multers');
 const middleware = require('../auth/multers');
 
 // insert job with image and category to database
-router.post('/jobs/createWithImage', uploadOptions.single('image'), async (req, res) => {  
+router.post('/jobs/create',auth.verifyUser, uploadOptions.single('image'), async (req, res) => {  
     try {
-        const userId=req.body._id;
+        const userId=req.body.userId;
         const { title, maxApplicants, maxPositions, location,activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary } = req.body;
         const image = req.file;
         const imageUrl = `${req.protocol}://${req.get('host')}/public/uploads${image.filename}`;
         const job = new Job({
         userId,title, maxApplicants, maxPositions, location,activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary,
         image: imageUrl,
-        });
+        }); 
         await job.save().then(() => {
             res.json({ msg: "success" });
         });
@@ -50,13 +50,7 @@ router.post('/jobs/createWithMultipleImage', uploadOptions.array('images'), asyn
     }
 }
 );
-
-
-
-
-
-
-        
+  
 
     // To get all jobs
     router.get('/jobs/getAll',auth.verifyUser,middleware.single(''),  (req, res) => {
@@ -72,27 +66,30 @@ router.post('/jobs/createWithMultipleImage', uploadOptions.array('images'), asyn
     }
     );
 
-
-    // // To get all jobs by user
-    router.get('/jobs/getAllByUser',auth.verifyUser, middleware.single(''), (req, res) => {
-
-       try{ const user = req.user;
-        Job.find({user:user._id}).then((data) => {
-            res.json(data);
+    // to get jobs by job id
+    router.get("/Job/getById/:id",  async (req, res) => {
+        const job = await Job.findById(req.params.id).populate("category"); // display category in product
+        if (!job) {
+          res.status(401).json({
+            success: false,
+            message: "Cannot find the job",
+          });
+        } else {
+          res.status(201).json({
+            success: true,
+            data: job,
+          });
         }
-        )}
-        catch(e){
-            res.status(400).json({ msg: e });
-        }
-    }
-    );
+      });
+
 
     // // To get all jobs by user id
-    router.get('/jobs/getAllByUser/:id',auth.verifyUser, middleware.single(''), (req, res) => {
+    router.get('/jobs/getAllByUser/:id', async(req, res) => {
         
       try{
-        Job.find({user:req.params.id}).then((data) => {
-            res.json(data);
+        const id=req.body.userId;
+        await Job.findById({id}).then((data) => {
+            res.json("success",data);
         }
         )
       }
@@ -104,24 +101,8 @@ router.post('/jobs/createWithMultipleImage', uploadOptions.array('images'), asyn
 
 
 
-
-    // To get jobs by id   ##NOT USED because the code below this is in useed
-    // router.get('/jobs/getbyId/:id',auth.verifyUser,middleware.single(''),  (req, res) => {
-    //     const user = req.user;
-    //     Job.findById(req.params.id).then((data) => {
-    //         res.json(data);
-    //     }
-    //     ).catch((err) => {
-    //         res.status(400).json(err);
-    //     }
-    //     );
-    // }
-    // );
-
-
-
-    // find a single job with a id.
-router.get ("/jobs/getById/:id",auth.verifyUser ,middleware.single(''),(req, res) => {
+    // find a single job with a job id.
+router.get ("/jobs/getById/:id",auth.verifyUser ,(req, res) => {
     Job.findById(req.params.id)
         .then(data => {
             if(!data) {
@@ -153,7 +134,7 @@ router.get ("/jobs/getById/:id",auth.verifyUser ,middleware.single(''),(req, res
 
 
     // To update job
-    router.put('/jobs/update/:id', (req, res) => {
+    router.put('/jobs/update/:id',middleware.single(""), (req, res) => {
 
        try{
         const data = req.body;
@@ -211,24 +192,7 @@ router.get ("/jobs/getById/:id",auth.verifyUser ,middleware.single(''),(req, res
     }
     );
 
-    // To delete all jobs by user id
-    router.delete('/jobs/deleteAllByUser/:id',auth.verifyUser, middleware.single(''), (req, res) => {
-        
-       try{ Job.deleteMany({user:req.params.id}).then((data) => {
-        res.send({
-            success: true,
-            message: 'jobs successfully deleted',
-            data: data
-        });
-    }
-
-    )}
-        catch(err){
-            res.status(400).json(err);
-        }
-    }
-
-    );
+    
 
     
 

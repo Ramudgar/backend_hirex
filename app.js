@@ -8,10 +8,10 @@ const cors = require("cors");
 
 //Constants and routes
 const userRoutes=require('./routes/UserRoutes');
-const profileRoutes=require('./routes/profileRoutes');
 const jobRoutes=require('./routes/jobRoutes');
 const jobApplicantsRoutes=require('./routes/jobApplicantsRoutes');
 const jobCategoryRoutes=require('./routes/jobCategoryRoutes');
+const profileRoutes=require('./routes/profileRoutes');
 
 
 //Before using any services enable CORS
@@ -22,10 +22,10 @@ app.use(express.json(    ));
 
 // Using api routes to connect to the routes
 app.use(userRoutes);
-app.use(profileRoutes);
 app.use(jobRoutes);
 app.use(jobApplicantsRoutes);
 app.use(jobCategoryRoutes);
+app.use(profileRoutes);
 
 //Server
 app.listen(3000, () => {

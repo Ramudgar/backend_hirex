@@ -84,7 +84,7 @@ router.get('/jobApplicants/getAllByUserId/:userId', async (req, res) => {
 );
 
 // update job applicants by id
-router.put('/jobApplicants/update/:id', async (req, res) => {
+router.put('/jobApplicants/update/:id',middleware.single(""), async (req, res) => {
     try {
         const id = req.params.id;
         const data = req.body;

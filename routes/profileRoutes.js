@@ -1,107 +1,104 @@
-const express = require('express');
-const router = express.Router();
-const profile = require('../models/profile');
-const auth = require('../auth/auth');
+const express=require('express');
+const router=express.Router();
+const auth=require('../auth/auth');
+const Profile=require('../models/profile');
+const uploadsImage=require('../auth/multers');
 
 
-// create profile for users
+router.post('/profile/create',auth.verifyUser,uploadsImage.single("profilePic"), async(req,res)=>{
 
-router.post('/profile/create', auth.userGaurd, (req, res) => {
-    const data = req.body;
+const data=req.body;
+const pic=req.file;
+const picUrl=`${req.protocol}://${req.get('host')}/public/uploads${pic.filename}`;
+const userId=data.userId;
 
-    let profile = new profile({
-        name: data.name,
-        userId: data.userId,
-        phone: data.phone,
-        street: data.address.street,
-        country: data.address.country,
-        city: data.address.city,
-        zip: data.address.zip,
-        state: data.address.state,
-        vdc: data.address.vdc,
-        ward: data.address.ward,
-        tole: data.address.tole,
-        college: data.education.college,
-        level: data.education.level,
-        clzaddress: data.education.clzaddress,
-        yearJoined: data.education.yearJoined,
-        yearPassed: data.education.yearPassed,
-        pic: data.pic,
-        type: data.type,
-        description: data.description,
-        website: data.website
-    });
 
-    profile.save().then(() => {
-        res.json({ message: 'Profile created successfully' });
+try{   Profile.findOne({ userId})
+.then((user_data) => {
+    if (user_data != null) {
+        res.json({ msg: 'profile already exists' });
+        return;
+    }})
+const profile=new Profile({
+
+userId,
+name:data.name, 
+skills:data.skills, 
+phone:data.phone,
+address:{
+    country:data.country,
+    city:data.city,
+    zipCode:data.zipCode,
+    state:data.state,
+   
+},
+education:{
+    institutionName:data.institutionName,
+   
+    degree:data.degree,
+    startYear:data.startYear,
+    endYear:data.endYear,
+},
+experience:data.experience,
+languages:data.languages,
+email:data.email,
+website:data.website,
+profilePic:picUrl
+
+})
+await profile.save().then((value)=>{
+res.json({msg:"success",value});
+}  );
+  }catch(e){
+    res.status(400).json({msg:e});  } 
+});
+
+// get profiles by userId
+router.get('/profile/getByUserId/:userId',auth.verifyUser, async(req,res)=>{
+    try{
+        const userId=req.body.userId;
+        await Profile.find({userId}).then((data)=>{
+            res.json("success",data);
+        }  );
+    }catch(e){
+        res.status(400).json({msg:e});
     }
-    ).catch((err) => {
-        res.status(400).json(err);
-    })
 }
 );
 
-
-
-// to get all profiles by user id
-router.get('/profile/getAllByUser/:id', auth.userGaurd, (req, res) => {
-    const user = req.user;
-    profile.find({ userId: req.params.id }).then((data) => {
-        res.json(data);
+// update profile by userId
+router.put('/profile/update/:userId',auth.verifyUser,uploadsImage.single(""), async(req,res)=>{
+    try{
+        const userId=req.body.userId;
+        const data=req.body;
+        await Profile.findOneAndUpdate({userId},data).then((data)=>{
+            res.json("success",data);
+        }  );
+    }catch(e){
+        res.status(400).json({msg:e});
     }
-    ).catch((err) => {
-        res.status(400).json(err);
-    }
-    );
 }
 );
 
-
-
-// to update profile by userId
-router.put('/profile/updateByUser/:id', auth.userGaurd, (req, res) => {
-    const user = req.user;
-    profile.findOneAndUpdate({ userId: req.params.id }, {
-        $set: {
-            name: req.body.name,
-            userId: req.body.userId,
-            phone: req.body.phone,
-            street: req.body.address.street,
-            country: req.body.address.country,
-            city: req.body.address.city,
-            zip: req.body.address.zip,
-            state: req.body.address.state,
-            vdc: req.body.address.vdc,
-            ward: req.body.address.ward,
-            tole: req.body.address.tole,
-            college: req.body.education.college,
-            level: req.body.education.level,
-            clzaddress: req.body.education.clzaddress,
-
-            yearJoined: req.body.education.yearJoined,
-            yearPassed: req.body.education.yearPassed,
-            pic: req.body.pic,
-            type: req.body.type,
-            description: req.body.description,
-            website: req.body.website
-        }
-    }).then((data) => {
-        res.send({
-            success: true,
-            message: 'profile updated successfully',
-            data: data
-        });
+// delete profile by userId
+router.delete('/profile/delete/:userId',auth.verifyUser, async(req,res)=>{
+    try{
+        const userId=req.body.userId;
+        await Profile.findOneAndDelete({userId}).then((data)=>{
+            res.json("success",data);
+        }  );
+    }catch(e){
+        res.status(400).json({msg:e});
     }
-    ).catch((err) => {
-        res.status(400).json(err);
-    }
-    );
 }
 );
 
 
 
 
-module.exports = router;
 
 
+
+
+
+module.exports=router;
