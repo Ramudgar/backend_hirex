@@ -28,8 +28,9 @@ const FILE_TYPE_MAP = {
       else cb(null,"./public/uploads/file"); // path where we upload an image
     },
     filename: function (req, file, cb) {
+      const filename = file.originalname.split(".")[0];
       const extension = FILE_TYPE_MAP[file.mimetype];
-      cb(null, `${Date.now()}.${extension}`);
+      cb(null, `${filename}-${Date.now()}.${extension}`);
     }
   });
 

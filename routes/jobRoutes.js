@@ -6,57 +6,52 @@ const Job=require('../models/job');
 const uploadOptions = require('../auth/multers');
 const middleware = require('../auth/multers');
 
-// insert job with image and category to database
-router.post('/jobs/create',auth.verifyUser, uploadOptions.single('image'), async (req, res) => {  
-    try {
-        const userId=req.body.userId;
-        const { title, maxApplicants, maxPositions, location,activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary } = req.body;
-        const image = req.file;
-        const imageUrl = `${req.protocol}://${req.get('host')}/public/uploads${image.filename}`;
-        const job = new Job({
-        userId,title, maxApplicants, maxPositions, location,activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary,
-        image: imageUrl,
-        }); 
-        await job.save().then(() => {
-            res.json({ msg: "success" });
-        });
-    }
-    catch (e) {
-        res.status(400).json({ msg: e });
-    }
-}
-);
 
-// insert job with multiple image and category to database
-router.post('/jobs/createWithMultipleImage', uploadOptions.array('images'), async (req, res) => {
+
+
+router.post('/jobs/create', uploadOptions.single("image"), async (req, res) => {
+    const data = req.body;
+    const pic = req.file;
+    const picUrl = `${req.protocol}://${req.get('host')}/public/uploads/${pic.filename}`;
+    const userId = data.userId;
+
     try {
-        const userId=req.body._id;
-        const { title, maxApplicants, maxPositions, location,activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary } = req.body;
-        const images = req.files;
-        const imageUrls = images.map((image) => {
-            return `${req.protocol}://${req.get('host')}/public/uploads/${image.filename}`;
-        }
-        );
-        const job = new Job({
-        userId,title, maxApplicants, maxPositions, location,activeApplications, acceptedCandidates, dateOfPosting, deadline, skillSets, jobType, duration, salary,
-        images: imageUrls,
-        });
-        await job.save().then(() => {
-            res.json({ msg: "success" });
-        });
-    }
-    catch (e) {
+                const job = new Job({
+                    userId,
+                    title: data.title,
+                    description: data.description,
+                    skills: data.skills,
+                    salary: data.salary,
+                    location: data.location,
+                    image: picUrl,
+                    category: data.category,
+                    maxApplicants: data.maxApplicants,
+                    maxPositions: data.maxPositions,
+                    dateOfPosting: data.dateOfPosting,
+                    deadline: data.deadline,
+                    jobType: data.jobType,
+                    duration: data.duration,
+
+                })
+                job.save().then((value) => {
+                    res.json({ success: true, msg: "success", value });
+                });
+
+         
+
+    } catch (e) {
         res.status(400).json({ msg: e });
     }
-}
-);
-  
+
+});
+
+
 
     // To get all jobs
     router.get('/jobs/getAll',auth.verifyUser,middleware.single(''),  (req, res) => {
         
         try{Job.find({}).then((data) => {
-            res.json(data);
+            res.json({ success: true, msg: "jobs fetched successfully", data });
         }
         )}
         catch(e){
@@ -89,7 +84,7 @@ router.post('/jobs/createWithMultipleImage', uploadOptions.array('images'), asyn
       try{
         const id=req.body.userId;
         await Job.findById({id}).then((data) => {
-            res.json("success",data);
+            res.json({success:true,msg:"jobs fetched by id successfully",data});
         }
         )
       }

@@ -5,15 +5,20 @@ const middleware=require('../auth/multers');
 
 
 // create job category
-router.post('/category/create',auth.verifyUser,middleware.single(""), async (req, res) => {
+router.post("/category/create/",middleware.single("image"), async (req, res) => {
 
     try {
         const data = req.body;
+        const image = req.file;
+        const imageUrl = `${req.protocol}://${req.get('host')}/public/uploads${image.filename}`;
         const category = new Category({
+            
             categoryName: data.categoryName,
-        })
+            image: imageUrl,
+            
+    });
         await category.save().then((data) => {
-            res.json({ msg: 'success', data });
+            res.json({ data} );
         }
         )
     }
@@ -39,34 +44,24 @@ router.put('/category/updatebyId/:id',middleware.single(""),(req,res)=>{
 })
 
 
-// get category by id
-router.get('category/:id',async (req,res)=>{
-    const category = await Category.findById(req.params.id);
-    if(!category){
-      res.status(404).json({
-        success: false,
-      });
-    } else{
-      res.status(201).json({
-        success: true,
-        data: category,
-      });
-    }
-  });
 
-// get all categories
-router.get('/category/getAll', async (req, res) => {
-    try {
-        await Category.find().then((data) => {
-            res.status(200).json("success", data);
-        }   
-        );
+
+//   to get all jobs category 
+router.get('/category/getAll',async (req, res) => {
+    try{
+        const category = await Category.find({}).then((data) => {
+            res.json({data} );
+        }
+        )
+        return category;
     }
-    catch (e) {
+    catch(e){
         res.status(400).json({ msg: e });
     }
 }
 );
+
+
 
 
 

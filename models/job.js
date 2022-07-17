@@ -28,22 +28,13 @@ let schema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    activeApplications: {
-      type: Number,
-      default: 0,
-      
-    },
-    acceptedCandidates: {
-      type: Number,
-      default: 0,
-     
-    },
+    
     dateOfPosting: {
-      type: Date,
+      type: String,
       default: Date.now,
     },
     deadline: {
-      type: Date,
+      type: String,
       
     },
     skillSets: {
@@ -79,7 +70,7 @@ let schema = new mongoose.Schema(
       },
     },
     image:{ type: String ,
-      default:""},
+      },
   },
   
  

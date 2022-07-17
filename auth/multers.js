@@ -33,8 +33,9 @@ var storage = multer.diskStorage({
       else cb(null,"./public/uploads"); // path where we upload an image
     },
     filename: function (req, file, cb) {
+      const filename = file.originalname.split(".")[0];
       const extension = FILE_TYPE_MAP[file.mimetype];
-      cb(null, `IMG-${Date.now()}.${extension}`);
+      cb(null, `${filename}-${Date.now()}.${extension}`);
     }
   });
 
@@ -44,6 +45,12 @@ var storage = multer.diskStorage({
 
 
   var uploadOptions = multer({ storage: storage });
+
+
+
+ 
+
+ 
 
 
 
