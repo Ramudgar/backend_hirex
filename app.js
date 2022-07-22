@@ -14,11 +14,13 @@ const jobCategoryRoutes=require('./routes/jobCategoryRoutes');
 const profileRoutes=require('./routes/profileRoutes');
 
 
+
 //Before using any services enable CORS
 app.use(cors());
 app.options("*", cors()); // * means allow all the http request to pass from any other region
 
 app.use(express.json(    ));
+app.use(express.static(__dirname+'./public/'));
 
 // Using api routes to connect to the routes
 app.use(userRoutes);

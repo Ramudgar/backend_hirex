@@ -2,59 +2,57 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../auth/auth');
 const Profile = require('../models/profile');
-const uploadsImage = require('../auth/multers');
+const uploadsImage = require('../middleware/upload');
 
 
 
-router.post('/profile/create', uploadsImage.single("profilePic"), async (req, res) => {
+router.post('/profile/create', auth.verifyUser, uploadsImage.single("profilePic"), async (req, res) => {
     const data = req.body;
     const pic = req.file;
-    const picUrl = `${req.protocol}://${req.get('host')}/public/uploads/${pic.filename}`;
-    const userId = data.userId;
+    const fileUrl = `${req.protocol}://${req.get('host')}/public/uploads/${pic.filename}`;
+    const userId = req.userData._id;
 
     try {
         Profile.findOne({ userId })
-        .then((user_data) => {
-            if (user_data != null) {
-                res.json({ msg: 'profile already exists' });
-                return;
-            }
-            else {
-                const profile = new Profile({
+            .then((user_data) => {
+                if (user_data != null) {
+                    res.json({ msg: 'profile already exists' });
+                    return;
+                }
+                else {
+                    const profile = new Profile({
 
-                    userId,
-                    name: data.name,
-                    skills: data.skills,
-                    phone: data.phone,
-                    address: {
-                        country: data.country,
-                        city: data.city,
-                        zipCode: data.zipCode,
-                        state: data.state,
+                        userId, /* userId is fetched form auth.verify user from auth file*/
+                        name: data.name,
+                        skills: data.skills,
+                        phone: data.phone,
+                        address: {
+                            country: data.country,
+                            city: data.city,
+                            zipCode: data.zipCode,
+                            state: data.state,
 
-                    },
-                    education: {
-                        institutionName: data.institutionName,
+                        },
+                        education: {
+                            institutionName: data.institutionName,
 
-                        degree: data.degree,
-                        startYear: data.startYear,
-                        endYear: data.endYear,
-                    },
-                    experience: data.experience,
-                    languages: data.languages,
-                    email: data.email,
-                    website: data.website,
-                    profilePic: picUrl
+                            degree: data.degree,
+                            startYear: data.startYear,
+                            endYear: data.endYear,
+                        },
+                        experience: data.experience,
+                        languages: data.languages,
+                        email: data.email,
+                        website: data.website,
+                        profilePic: fileUrl,
 
-                })
-                profile.save().then((value) => {
-                    res.json({ success: true, msg: "success", value });
-                });
+                    })
+                    profile.save().then((profiles) => {
+                        res.json({ success: true, msg: "success", profiles });
+                    });
 
-            }
-
-
-        })
+                }
+            })
 
     } catch (e) {
         res.status(400).json({ msg: e });
@@ -62,38 +60,31 @@ router.post('/profile/create', uploadsImage.single("profilePic"), async (req, re
 
 });
 
-// get profiles by userId
-router.get('/profile/getByUserId/:userId', async (req, res) => {
+
+// get profile by user id
+router.get('/profile/getByUserId/:userId', auth.verifyUser, async (req, res) => {
     try {
-        const userId = req.body.userId;
-        await Profile.find({ userId }).then((data) => {
-            res.json("success", data);
-        });
-    } catch (e) {
+        const userId = req.params.userId;
+        await Profile.findOne({ userId }).then(profile => {
+            res.status(200).json({success:true,msg:"success",profile});
+        }
+        );
+    }
+    catch (e) {
         res.status(400).json({ msg: e });
     }
 }
 );
 
-// update profile by userId
-router.put('/profile/update/:userId', auth.verifyUser, uploadsImage.single(""), async (req, res) => {
-    try {
-        const userId = req.body.userId;
-        const data = req.body;
-        await Profile.findOneAndUpdate({ userId }, data).then((data) => {
-            res.json("success", data);
-        });
-    } catch (e) {
-        res.status(400).json({ msg: e });
-    }
-}
-);
+
+// update profile by user id
+
 
 // delete profile by userId
 router.delete('/profile/delete/:userId', auth.verifyUser, async (req, res) => {
     try {
         const userId = req.body.userId;
-        await Profile.findOneAndDelete({ userId }).then((data) => {
+        await Profile.findByIdAndRemove({ userId:req.userData._id }).then((data) => {
             res.json("success", data);
         });
     } catch (e) {

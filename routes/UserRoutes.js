@@ -28,8 +28,8 @@ router.post('/user/register', (req, res) => {
                 password: hashed_pw,
                 role: role,
             });
-            data.save().then(() => {
-                res.json({ msg: 'Data inserted', msg: "success" });
+            data.save().then((data) => {
+                res.json({ msg: 'Data inserted', success: true ,data});
             });
         })
     })} catch(e){
@@ -57,7 +57,7 @@ router.post('/user/login', (req, res) => {
             bcryptjs.compare(password, user_data.password, (e, result) => {
                 if (result) {
                     const token = jwt.sign({ _id: user_data._id }, 'softwarica', { expiresIn: '1d' });
-                    res.status(200).json({ token: token, user: user_data });
+                    res.status(200).json({ token: token, user: user_data,success:true });
                 } else {
                     res.status(400).json({ msg: 'invalid credentials' });
                 }

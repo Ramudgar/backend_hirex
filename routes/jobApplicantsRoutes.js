@@ -3,12 +3,11 @@ const router = express.Router();
 const auth = require('../auth/auth')
 const JobApplicants = require('../models/jobApplicants');
 const middleware = require('../auth/multers');
-const uploadsFile = require('../auth/file');
 
 
 // create job applicants with file upload
 
-router.post('/jobApplicants/create', uploadsFile.single('resume'), async (req, res) => {
+router.post('/jobApplicants/create', async (req, res) => {
     try {
         const userId=req.body._id;
         const file = req.file;

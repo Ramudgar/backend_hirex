@@ -13,11 +13,13 @@ module.exports.verifyUser = function(req,res, next){
         const data = jwt.verify(token, 'softwarica');
     
         console.log(data);
+        console.log(data._id);
 
-        User.findOne({_id : data.userId})
-        .then(function(result){
-            //all the data of the logged in user is stored in result
-            req.userData = result;
+        User.findOne({_id : data._id})
+        .then(function(user){
+            //all the data of the logged in user is stored in user
+            // console.log(user);
+            req.userData = user;
             next();
         })
         .catch(function(e){

@@ -6,6 +6,7 @@ let schema = new mongoose.Schema(
     userId:{
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
+      required: true
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,

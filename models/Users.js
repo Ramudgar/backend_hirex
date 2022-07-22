@@ -19,13 +19,13 @@ const UserSchema = new Schema({
  },
  username: {
     type: String,
-    required: true,
+   //  required: true,
  },
  accessToken: {
   type: String
  }
 });
  
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('users', UserSchema);
  
 module.exports = User;
