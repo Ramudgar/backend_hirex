@@ -30,6 +30,6 @@ app.use(jobCategoryRoutes);
 app.use(profileRoutes);
 
 //Server
-app.listen(3000, () => {
-  console.log("Server running at http://localhost:3000".yellow.underline.bold);
+app.listen(5000, () => {
+  console.log("Server running at http://localhost:5000".yellow.underline.bold);
 });

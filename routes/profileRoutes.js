@@ -4,7 +4,7 @@ const auth = require('../auth/auth');
 const Profile = require('../models/profile');
 const image_upload = require('../middleware/upload');
 const mongoose = require('mongoose');
-const DOMAIN = "http://127.0.0.0:3000/";
+const DOMAIN = "http://127.0.0.0:5000/";
 
 
 

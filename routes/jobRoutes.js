@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../auth/auth')
 const Job = require('../models/job');
 const image_upload = require('../middleware/upload');
-const DOMAIN="http://127.0.0.0:3000/"
+// const DOMAIN="http://127.0.0.0:5000/"
 const mongoose = require('mongoose');
 
 router.post(
@@ -21,8 +21,8 @@ router.post(
       userId=req.userData._id;
       // console.log(userId);
       let data=req.body;
-let file = req.file;
-let filename = DOMAIN + "public/uploads/" + file.filename;
+let file = req.file.filename;
+// let filename = DOMAIN + "public/uploads/" + file.filename;
       let job = new Job({
         userId,
         title: data.title,
@@ -30,7 +30,7 @@ let filename = DOMAIN + "public/uploads/" + file.filename;
         skills: data.skills,
         salary: data.salary,
         location: data.location,
-        image: filename,
+        image: file,
         category: data.category,
         maxApplicants: data.maxApplicants,
         maxPositions: data.maxPositions,
@@ -55,7 +55,7 @@ let filename = DOMAIN + "public/uploads/" + file.filename;
 );
 
 
-
+// update job by job id
 router.put("/jobs/update/:id",image_upload.single('image'), async (req, res) => {
   //If the :id is not in _id format then this message will be shown
   if (!mongoose.isValidObjectId(req.params.id)) {
@@ -151,20 +151,22 @@ router.get("/jobs/getById/:id", auth.verifyUser, (req, res) => {
 
 
 
-// to get all jobs by user id
-router.get('/jobs/getAllByUserId/:userId', (req, res) => {
+// get all jobs by user id
+router.get("/jobs/getByUser", auth.verifyUser, async (req, res) => {
   try {
-    const userId = req.params.userId;
-    Job.find({ userId }).then(jobs => {
-      res.json(jobs);
-    }
-    );
+    let jobs = await Job.find({ userId: req.userData._id });
+    return res.status(200).json({
+      jobs,
+      success: true,
+      message: "Events fetched successfully.",
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: "Unable to fetch events.",
+    });
   }
-  catch (e) {
-    res.status(400).json({ msg: e });
-  }
-}
-);
+});
 
 
 
