@@ -1,8 +1,14 @@
 const multer = require("multer");
+
+
+
+
+const Destination = (req, file, next) => {
+    next(null, `${__dirname}/../public/uploads`);
+  };
+
 const storage = multer.diskStorage({
-    destination : function(req, file, cb){
-        cb(null, "./public/uploads")
-    },
+    destination : Destination,
     filename: function(req, file,cb){
         cb(null, Date.now() + file.originalname)
     }
@@ -19,4 +25,8 @@ const image_upload = multer({
     storage : storage,
     fileFilter: filter
 });
+
+
+
+
 module.exports = image_upload;
