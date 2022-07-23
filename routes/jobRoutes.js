@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../auth/auth')
 const Job = require('../models/job');
-const middleware = require('../auth/multers');
 const image_upload = require('../middleware/upload');
 const DOMAIN="http://127.0.0.0:3000/"
+const mongoose = require('mongoose');
 
 router.post(
   "/jobs/create",auth.verifyUser,
@@ -56,6 +56,46 @@ let filename = DOMAIN + "public/uploads/" + file.filename;
 
 
 
+router.put("/jobs/update/:id",image_upload.single('image'), async (req, res) => {
+  //If the :id is not in _id format then this message will be shown
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(400).send("Invalid product id");
+  }
+const data = req.body;
+  let file = req.file.filename;
+let filename = DOMAIN + "public/uploads/" + file;
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: data.title,
+        description: data.description,
+        skills: data.skills,
+        salary: data.salary,
+        location: data.location,
+        image: filename,
+        category: data.category,
+        maxApplicants: data.maxApplicants,
+        maxPositions: data.maxPositions,
+        dateOfPosting: data.dateOfPosting,
+        deadline: data.deadline,
+        jobType: data.jobType,
+        duration: data.duration,
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!job) {
+      res.status(500).json({
+        success: false,
+        message: "Update error",
+      });
+    } else {
+      res.status(201).json({ success: true, data: job });
+    }
+  }
+);
 
 
 
@@ -129,29 +169,11 @@ router.get('/jobs/getAllByUserId/:userId', (req, res) => {
 
 
 
-// To update job
-router.put('/jobs/update/:id', middleware.single(""), (req, res) => {
 
-  try {
-    const data = req.body;
-    Job.findByIdAndUpdate(req.params.id, data, { new: true }).then((data) => {
-      res.send({
-        success: true,
-        message: 'job successfully updated',
-        data: data
-      });
-    }
-    )
-  }
-  catch (err) {
-    res.status(400).json(err);
-  }
-}
-);
 
 
 // To delete job by id
-router.delete('/jobs/deleteById/:id', auth.verifyUser, middleware.single(''), (req, res) => {
+router.delete('/jobs/deleteById/:id', auth.verifyUser,  (req, res) => {
 
   try {
     Job.findByIdAndRemove(req.params.id).then((data) => {
@@ -170,25 +192,22 @@ router.delete('/jobs/deleteById/:id', auth.verifyUser, middleware.single(''), (r
 }
 );
 
-// To delete all jobs
-router.delete('/jobs/deleteAll', auth.verifyUser, middleware.single(''), (req, res) => {
-  try {
-    const user = req.user;
-    Job.deleteMany({}).then((data) => {
-      res.send({
-        success: true,
-        message: 'jobs successfully deleted',
-        data: data
-      });
-    }
-    )
-  }
-  catch (err) {
-    res.status(400).json(err);
-  }
+// to delete all job by user id
+router.delete('/jobs/deleteAllByUserId/:userId', auth.verifyUser,  (req, res) => {
 
+  try {
+    const userId = req.params.userId;
+    Job.deleteMany({ userId }).then(jobs => {
+      res.json(jobs);
+    }
+    );
+  }
+  catch (e) {
+    res.status(400).json({ msg: e });
+  }
 }
 );
+
 
 
 
